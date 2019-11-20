@@ -32,18 +32,20 @@ cdef extern from "../bm3d_src/bm3d.h":
                  const unsigned tau_2D_wien,
                  const unsigned color_space,
                  const unsigned patch_size,
+                 const unsigned num_threads,
                  const bool verbose)
 
 
 cpdef float[:,:,:] run_bm3d_wrap(
     float[:,:,:] input_array,
     float sigma,
-    bool useSD_h=True,
-    bool useSD_w=True,
-    str tau_2D_hard="DCT",
+    bool useSD_h=False,
+    bool useSD_w=False,
+    str tau_2D_hard="BIOR",
     str tau_2D_wien="DCT",
-    str color_space="YUV",
+    str color_space="OPP",
     int patch_size=0,
+    int num_threads=0,
     bool verbose=False):
     """
     sigma: value of assumed noise of the noisy image
@@ -101,6 +103,7 @@ cpdef float[:,:,:] run_bm3d_wrap(
                    tau_2D_hard_i, tau_2D_wien_i,
                    color_space_i,
                    patch_size,
+                   num_threads,
                    verbose)
     if ret != 0:
         raise Exception("run_bmd3d returned an error, ret_val=%d" % ret)
