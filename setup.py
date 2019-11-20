@@ -112,8 +112,8 @@ class CustomBuildExt(_build_ext):
 
 
 # optimize to the current CPU and enable warnings
-extra_compile_args = {'unix': ['-march=native', '-Wall', '-Wextra', ],
-                      'c_args': ['-std=c99', ]}
+extra_compile_args = {'unix': ['-march=native', '-Wall', '-Wextra', '-fopenmp', ],
+                      'c_args': ['-std=c99']}
 libraries = ["png", "tiff", "jpeg", "fftw3", "fftw3f"]
 ext_modules = [Extension("pybm3d.bm3d",
                          language="c++",
@@ -123,6 +123,7 @@ ext_modules = [Extension("pybm3d.bm3d",
                                   "bm3d_src/lib_transforms.cpp",
                                   "bm3d_src/utilities.cpp", ],
                          extra_compile_args=extra_compile_args,
+                         extra_link_args=['-fopenmp'],
                          libraries=libraries)]
 
 setup(
