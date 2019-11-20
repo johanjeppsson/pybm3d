@@ -91,10 +91,10 @@ cpdef float[:,:,:] run_bm3d_wrap(
     # convert the input image
     input_image.resize(input_array.size)
     pos = 0
-    for i in range(input_array.shape[0]):
-        for j in range(input_array.shape[1]):
-            for k in range(input_array.shape[2]):
-                input_image[pos] = input_array[i, j, k]
+    for c in range(input_array.shape[2]):
+        for y in range(input_array.shape[0]):
+            for x in range(input_array.shape[1]):
+                input_image[pos] = input_array[y, x, c]
                 pos +=1
 
     ret = run_bm3d(sigma, input_image, basic_image, output_image,
@@ -112,10 +112,10 @@ cpdef float[:,:,:] run_bm3d_wrap(
                                             dtype=np.float32)
 
     pos = 0
-    for i in range(input_array.shape[0]):
-        for j in range(input_array.shape[1]):
-            for k in range(input_array.shape[2]):
-                output_array[i, j, k] = output_image[pos]
+    for c in range(input_array.shape[2]):
+        for y in range(input_array.shape[0]):
+            for x in range(input_array.shape[1]):
+                output_array[y, x, c] = output_image[pos]
                 pos +=1
 
     return output_array
@@ -135,12 +135,12 @@ def bm3d(input_array, *args, clip=True, **kwargs):
     input_array = np.atleast_3d(input_array).astype(np.float32)
 
     out = run_bm3d_wrap(input_array, *args, **kwargs)
-    out = np.array(out, dtype=initial_dtype).reshape(initial_shape)
     if clip:
         if np.issubdtype(initial_dtype, np.integer):
             dtype_info = np.iinfo(initial_dtype)
         else:
             dtype_info = np.finfo(initial_dtype)
         out = np.clip(out, dtype_info.min, dtype_info.max)
+    out = np.array(out, dtype=initial_dtype).reshape(initial_shape)
 
     return out
